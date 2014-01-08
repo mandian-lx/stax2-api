@@ -1,7 +1,7 @@
-%_javapackages_macros
+%{?_javapackages_macros:%_javapackages_macros}
 Name:             stax2-api
 Version:          3.1.1
-Release:          8.0%{?dist}
+Release:          8.1%{?dist}
 Summary:          Experimental API extending basic StAX implementation
 License:          BSD
 # NOTE. new home http://wiki.fasterxml.com/WoodstoxStax2
