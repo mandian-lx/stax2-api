@@ -1,21 +1,19 @@
 %{?_javapackages_macros:%_javapackages_macros}
+
 Name:             stax2-api
-Version:          3.1.1
-Release:          8.1%{?dist}
+Version:          4.0.0
+Release:          2%{?dist}
 Summary:          Experimental API extending basic StAX implementation
 License:          BSD
-# NOTE. new home http://wiki.fasterxml.com/WoodstoxStax2
-URL:              http://docs.codehaus.org/display/WSTX/StAX2
-# NOTE. newer release available here https://github.com/FasterXML/stax2-api/
-Source0:          http://repository.codehaus.org/org/codehaus/woodstox/%{name}/%{version}/%{name}-%{version}-sources.jar
-Source1:          http://repository.codehaus.org/org/codehaus/woodstox/%{name}/%{version}/%{name}-%{version}.pom
+URL:              http://wiki.fasterxml.com/WoodstoxStax2
+Source0:          https://github.com/FasterXML/%{name}/archive/%{name}-%{version}.tar.gz
 
 BuildArch:        noarch
 
-BuildRequires:    maven-surefire-provider-junit
-BuildRequires:    bea-stax-api
-BuildRequires:    java-devel
-BuildRequires:    maven-local
+BuildRequires:  maven-local
+BuildRequires:  mvn(com.fasterxml:oss-parent:pom:)
+BuildRequires:  mvn(javax.xml.stream:stax-api)
+BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 
 %description
 StAX2 is an experimental API that is intended to extend
@@ -32,14 +30,12 @@ Summary:          API documentation for %{name}
 This package contains the API documentation for %{name}.
 
 %prep
-%setup -q -c %{name}
-# fixing incomplete source directory structure
-mkdir -p src/main/java
-mv -f org src/main/java/
+%setup -q -n %{name}-%{name}-%{version}
 
-cp %{SOURCE1} pom.xml
-%pom_remove_dep javax.xml.stream:stax-api
-%pom_add_dep stax:stax-api:1.0.1
+%pom_xpath_remove pom:Import-Package
+
+# javadoc generation fails due to strict doclint in JDK 8
+%pom_remove_plugin :maven-javadoc-plugin
 
 %build
 
@@ -54,6 +50,27 @@ cp %{SOURCE1} pom.xml
 %files javadoc -f .mfiles-javadoc
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Thu Jun 23 2016 Michael Simacek <msimacek@redhat.com> - 4.0.0-1
+- Update to upstream version 4.0.0
+
+* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.1.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.4-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Thu May 14 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.4-2
+- Remove maven-javadoc-plugin execution
+
+* Mon Feb 16 2015 Michael Simacek <msimacek@redhat.com> - 3.1.4-1
+- Update to upstream version 3.1.4
+
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.1-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Mon Aug 12 2013 gil cattaneo <puntogil@libero.it> 3.1.1-8
 - fix rhbz#993381
 - update to current packaging guidelines
